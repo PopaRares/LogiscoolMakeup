@@ -1,3 +1,6 @@
-login:
-  email: raresp98@gmail.com
-  password: PLACEHOLDER
+server:
+  address: imap.gmail.com
+  port: 993
+  login:
+    email: raresp98@gmail.com
+    password: PLACEHOLDER
