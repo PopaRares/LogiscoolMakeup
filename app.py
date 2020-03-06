@@ -1,6 +1,9 @@
-import yaml
+import email
+import imaplib
 import pickle
-import imaplib, email
+import re
+import yaml
+
 import calendar_handle as calendar
 
 
@@ -18,18 +21,28 @@ def get_emails(res, connection):
         msgs.append(data)
     return msgs
 
+
 def build_event(email):
-    event = None
+    timeZone = 'Europe/Bucharest'
+    event = {}
+    event['colorId'] = 5
+    event['location'] = re.findall(r'(?<=School:\s).*', email)[0][:-1]
+    event['summary'] = 'Recuperare - ' + re.findall(r'(?<=Course Type:\s).*', email)[0][:-1]
+    event['start'] = {'dateTime': '2020-03-5T20:00:00-00:00',
+                      'timeZone': timeZone}
+    event['end'] = {'dateTime': '2020-03-5T23:00:00-00:00',
+                    'timeZone': timeZone}
     return event
+
 
 def main():
     with open("config.yml", 'r') as ymlfile:
         cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
-    #accessing Logiscool inbox folder
+    # accessing Logiscool inbox folder
     con = imaplib.IMAP4_SSL(cfg['server']['address'])
     login_info = cfg['server']['login']
-    print(login_info)
+    print(login_info['email'])
     con.login(login_info['email'], login_info['password'])
     con.select('Logiscool')
 
@@ -46,7 +59,7 @@ def main():
 
     for em in emails:
         email_text = get_body(email.message_from_bytes(em[0][1]))
-        calendar.make_event(build_event(email_text))
+        calendar.make_event(credentials, build_event(email_text))
 
 
 if __name__ == "__main__":
