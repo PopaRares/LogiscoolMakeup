@@ -46,7 +46,7 @@ def main():
     # accessing Logiscool inbox folder
     con = imaplib.IMAP4_SSL(cfg['server']['address'])
     login_info = cfg['server']['login']
-    print(login_info['email'])
+    print('Logged in as: ' + login_info['email'])
     con.login(login_info['email'], login_info['password'])
     con.select('Logiscool')
 
@@ -61,9 +61,11 @@ def main():
             credentials = calendar.handshake()
             pickle.dump(credentials, open("token.pkl", "wb"))
 
-    for em in emails:
-        email_text = get_body(email.message_from_bytes(em[0][1]))
-        calendar.make_event(credentials, build_event(email_text))
+        for em in emails:
+            email_text = get_body(email.message_from_bytes(em[0][1]))
+            calendar.make_event(credentials, build_event(email_text))
+    else:
+        print('No new emails.')
 
 
 if __name__ == "__main__":
