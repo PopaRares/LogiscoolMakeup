@@ -12,4 +12,4 @@ def handshake():
 def make_event(cred, event):
     service = build("calendar", "v3", credentials=cred)
     calendar_event = service.events().insert(calendarId='primary', body=event).execute()
-    print("Event " + event['summary'] + ' created: ' + calendar_event.get('htmlLink'))
+    print("Event [" + event['summary'] + '] created: ' + calendar_event.get('htmlLink'))

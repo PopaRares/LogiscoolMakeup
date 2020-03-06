@@ -3,6 +3,7 @@ import imaplib
 import pickle
 import re
 import yaml
+import datetime
 
 import calendar_handle as calendar
 
@@ -28,9 +29,12 @@ def build_event(email):
     event['colorId'] = 5
     event['location'] = re.findall(r'(?<=School:\s).*', email)[0][:-1]
     event['summary'] = 'Recuperare - ' + re.findall(r'(?<=Course Type:\s).*', email)[0][:-1]
-    event['start'] = {'dateTime': '2020-03-5T20:00:00-00:00',
+    duration = re.split(r'\s-\s', re.findall(r'(?<=Time:\s).*', email)[0][:-1])
+    start_date = datetime.datetime.strptime(duration[0], '%B %d, %Y %I:%M %p').strftime('%Y-%m-%dT%H:%M:%S')
+    end_date = datetime.datetime.strptime(duration[1], '%B %d, %Y %I:%M %p').strftime('%Y-%m-%dT%H:%M:%S')
+    event['start'] = {'dateTime': start_date,
                       'timeZone': timeZone}
-    event['end'] = {'dateTime': '2020-03-5T23:00:00-00:00',
+    event['end'] = {'dateTime': end_date,
                     'timeZone': timeZone}
     return event
 
