@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+
 # returns google handshake credentials
 def handshake():
     scopes = ['https://www.googleapis.com/auth/calendar.events']
@@ -10,5 +11,5 @@ def handshake():
 
 def make_event(cred, event):
     service = build("calendar", "v3", credentials=cred)
-    event = service.events().insert(calendarId='primary', body=event).execute()
-    print('Event created: %s' % (event.get('htmlLink')))
+    calendar_event = service.events().insert(calendarId='primary', body=event).execute()
+    print("Event [" + event['summary'] + '] created: ' + calendar_event.get('htmlLink'))
